@@ -84,7 +84,7 @@ public class GameController : MonoBehaviour
     {
         LaunchFish();
 
-        _eventTicker = Mathf.Clamp(Random.Range(3.5f, 7.5f) - shrinkCount, 1.5f, 10f);
+        _eventTicker = Mathf.Clamp(Random.Range(3.5f, 5f) - shrinkCount, .5f, 10f);
     }
 
 

@@ -33,7 +33,7 @@ public class Fish : MonoBehaviour
             return;
 
         Jump();
-        _jumpTime = Random.Range(2.5f,5f);
+        _jumpTime = Random.Range(.5f, 1.5f);
         if (rg.position.y < -5)
             Deactivate();
     }
@@ -41,6 +41,8 @@ public class Fish : MonoBehaviour
     private void MoveTowardsTarget()
     {
         rg.velocity = Vector3.zero;
+        float mass = Random.Range(1f, 3f);
+        rg.AddForce(Vector3.down * mass);
         rg.useGravity = true;
         transform.position = target;
     }
