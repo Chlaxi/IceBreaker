@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class IcebergControls : MonoBehaviour
 {
+    public float stabilisation, stabilisationfactor, damping;
     private struct icebergValues
     {
         public icebergValues(Transform t, float mass)
@@ -34,19 +35,22 @@ public class IcebergControls : MonoBehaviour
     void Start()
     {
         rg = GetComponent<Rigidbody>();
+        rg.AddTorque(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)));
        // rg.constraints = RigidbodyConstraints.FreezePosition;
         startValues = new icebergValues(transform, rg.mass);
         shrinkgoal = transform.localScale;
+
         
     }
 
     private void FixedUpdate()
     {
-        float targetMass = transform.localScale.x * transform.localScale.y * transform.localScale.z * 2;
+        float targetMass = transform.localScale.x * transform.localScale.y * transform.localScale.z;
         rg.mass = targetMass;
+        stabilisation = rg.mass * stabilisationfactor;
+        Balance();
         if (!isSmelting)
             return;
-
         Shrink();
     }
 
@@ -83,5 +87,11 @@ public class IcebergControls : MonoBehaviour
         shrinkElapsedTime = 0;
         shrinkgoal -= new Vector3(.25f, 0, .25f);
         isSmelting = true;
+    }
+
+    private void Balance()
+    {
+        Vector3 torque = stabilisation * Vector3.Cross(transform.up, Vector3.up) - damping * rg.angularVelocity;
+        rg.AddTorque(torque);
     }
 }

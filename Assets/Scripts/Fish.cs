@@ -18,7 +18,6 @@ public class Fish : MonoBehaviour
     public void SetTarget(Vector3 target)
     {
         target.y = 14f;
-        Debug.Log("Setting target to " + target);
         this.target = target;
     }
 
@@ -35,6 +34,8 @@ public class Fish : MonoBehaviour
 
         Jump();
         _jumpTime = Random.Range(2.5f,5f);
+        if (rg.position.y < -5)
+            Deactivate();
     }
 
     private void MoveTowardsTarget()
@@ -51,5 +52,13 @@ public class Fish : MonoBehaviour
         jumpDir.Normalize();
         float force = Random.Range(1, jumpForce);
         rg.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
+    }
+
+    public void Deactivate(){
+        transform.position = new Vector3(-10, -10, -10);
+        rg.velocity = Vector3.zero;
+        rg.angularVelocity = Vector3.zero;
+        gameObject.SetActive(false);
+        GameController.instance.AddFishToPool(gameObject);
     }
 }

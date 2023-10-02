@@ -1,17 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController instance;
+
+    private void Awake()
+    {
+        instance = this;
+        fishPool = new Queue<GameObject>();
+    }
+
     public IcebergControls iceberg;
     public GameObject fish;
     public Transform fishSpawner;
     public float fishForce = 5f;
     public static float timeElapsed = 0;
-    private float _eventTicker = 15;
+    private float _eventTicker = 10;
     private int shrinkCount = 0;
     private float _shrinkTimer = 45;
+    private Queue<GameObject> fishPool;
  
     void Update()
     {
@@ -46,7 +58,15 @@ public class GameController : MonoBehaviour
 
     private void LaunchFish()
     {
-        GameObject f = Instantiate(fish, fishSpawner.position, Quaternion.identity);
+        GameObject f;
+        if (fishPool.Count > 0) {
+            f = fishPool.Dequeue();
+            f.SetActive(true);
+            f.transform.rotation = Quaternion.identity;
+        }
+        else
+            f = Instantiate(fish, fishSpawner.position, Quaternion.identity);
+
         Rigidbody rg = f.GetComponent<Rigidbody>();
         rg.useGravity = false;
         rg.AddForce(fishSpawner.up * fishForce, ForceMode.VelocityChange);
@@ -62,4 +82,10 @@ public class GameController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(iceberg.transform.position, iceberg.transform.localScale.x*2 * 0.8f);
     }
+
+    public void AddFishToPool(GameObject fish)
+    {
+        fishPool.Enqueue(fish);
+    }
+
 }
