@@ -32,6 +32,10 @@ public class CharacterMovement : MonoBehaviour
     {
 
         Move();
+        if (rg.position.y < -4)
+        {
+            GameController.instance.StopGame();
+        }
     }
 
     void Move()

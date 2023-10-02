@@ -1,6 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,25 +11,49 @@ public class GameController : MonoBehaviour
     {
         instance = this;
         fishPool = new Queue<GameObject>();
-    }
+        Time.timeScale = 0;
 
+    }
+    [SerializeField]
+    private TMP_Text scoreUIText, GameStateUIText;
+    public float score { get; private set; } = 0;
     public IcebergControls iceberg;
     public GameObject fish;
     public Transform fishSpawner;
     public float fishForce = 5f;
     public static float timeElapsed = 0;
-    private float _eventTicker = 10;
+    private float _eventTicker = 5;
     private int shrinkCount = 0;
-    private float _shrinkTimer = 45;
+    private float _shrinkTimer = 30;
     private Queue<GameObject> fishPool;
- 
+    public bool gameIsOn = false;
+
+    private void StartGame()
+    {
+        GameStateUIText.gameObject.SetActive(false);
+        score = 0;
+        gameIsOn = true;
+        Time.timeScale = 1;
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-            RestartGame();
-
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
+ 
+        if (!gameIsOn)
+        {
+            if(Input.GetKey(KeyCode.Space) && score == 0){
+                StartGame();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+                RestartGame();
+            
+            return;
+        }
+
+
 
         if (_shrinkTimer < 0)
         {
@@ -41,15 +64,21 @@ public class GameController : MonoBehaviour
 
         if (_eventTicker < 0)
             GameEvent();
-        {
-            
-        }
+
+        
+        score += Time.deltaTime; 
 
         timeElapsed += Time.deltaTime;
         _shrinkTimer -= Time.deltaTime;
         _eventTicker -= Time.deltaTime;
 
     }
+
+    private void LateUpdate()
+    {
+        scoreUIText.text = "Score: " + score.ToString("#.0");
+    }
+
 
     public void GameEvent()
     {
@@ -93,5 +122,15 @@ public class GameController : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void StopGame()
+    {
+        gameIsOn = false;
+        GameStateUIText.gameObject.SetActive(true);
+        GameStateUIText.text = "Game over\n" +
+            "You lasted " + score.ToString("#.0") + " seconds before going for a swim with the fish\n" +
+            "Press \"R\" to try again or \"Escape\" to exit";
+
     }
 }
