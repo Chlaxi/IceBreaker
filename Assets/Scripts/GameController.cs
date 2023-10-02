@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
@@ -27,6 +26,12 @@ public class GameController : MonoBehaviour
  
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+            RestartGame();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         if (_shrinkTimer < 0)
         {
             iceberg.StartShrink();
@@ -39,8 +44,6 @@ public class GameController : MonoBehaviour
         {
             
         }
-        if (Input.GetKeyDown(KeyCode.F))
-            LaunchFish();
 
         timeElapsed += Time.deltaTime;
         _shrinkTimer -= Time.deltaTime;
@@ -87,5 +90,8 @@ public class GameController : MonoBehaviour
     {
         fishPool.Enqueue(fish);
     }
-
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
