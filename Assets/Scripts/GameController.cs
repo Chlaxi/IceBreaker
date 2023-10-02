@@ -24,7 +24,7 @@ public class GameController : MonoBehaviour
     public static float timeElapsed = 0;
     private float _eventTicker = 5;
     private int shrinkCount = 0;
-    private float _shrinkTimer = 30;
+    private float _shrinkTimer = 15;
     private Queue<GameObject> fishPool;
     public bool gameIsOn = false;
 
