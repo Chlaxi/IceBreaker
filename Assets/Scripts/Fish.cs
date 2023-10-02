@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class Fish : MonoBehaviour
 {
     Rigidbody rg;
     Vector3 target;
-
+    [SerializeField, Range(1, 5)]
+    private float jumpForce;
+    private float _jumpTime = 5;
     private void Start()
     {
         rg = GetComponent<Rigidbody>(); 
@@ -25,6 +28,13 @@ public class Fish : MonoBehaviour
         {
             MoveTowardsTarget();
         }
+
+        _jumpTime -= Time.deltaTime;
+        if (_jumpTime > 0)
+            return;
+
+        Jump();
+        _jumpTime = Random.Range(2.5f,5f);
     }
 
     private void MoveTowardsTarget()
@@ -34,4 +44,12 @@ public class Fish : MonoBehaviour
         transform.position = target;
     }
 
+    private void Jump()
+    {
+        Vector3 jumpDir = new Vector3(Random.Range(-1f,1f), 1, Random.Range(-1f,1f));
+        jumpDir += jumpDir + Vector3.up;
+        jumpDir.Normalize();
+        float force = Random.Range(1, jumpForce);
+        rg.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
+    }
 }
