@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour
 
     }
     [SerializeField]
+    AudioSource music;
+    [SerializeField]
     private TMP_Text scoreUIText, GameStateUIText;
     public float score { get; private set; } = 0;
     public IcebergControls iceberg;
@@ -38,6 +40,10 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            music.mute = !music.mute;        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
  
